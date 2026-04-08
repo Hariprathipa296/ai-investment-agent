@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Investment Report</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f4f4f4;
+    padding: 20px;
+}
+
+.report {
+    background: white;
+    max-width: 900px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+.section {
+    margin-top: 25px;
+}
+
+h1 {
+    text-align: center;
+}
+
+h2 {
+    color: #007BFF;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.news {
+    background: #eef6ff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="report" id="report">
+    <h2>🤖 AI is analyzing your profile...</h2>
+</div>
+
+<script>
+
+// Get user data
+const data = JSON.parse(localStorage.getItem("userData"));
+
+// Risk Score Calculation
+let score = 0;
+
+if (data.age < 25) score += 3;
+else if (data.age < 40) score += 2;
+else score += 1;
+
+if (data.income > 70000) score += 3;
+else if (data.income > 30000) score += 2;
+else score += 1;
+
+if (data.risk === "High") score += 3;
+else if (data.risk === "Medium") score += 2;
+else score += 1;
+
+// AI-like Explanation
+let level, explanation;
+
+if (score <= 4) {
+    level = "Low Risk";
+    explanation = `
+    You prefer safe and stable investment options with minimal risk exposure.
+    With your investment amount, starting a small resale or freelancing business is ideal.
+    Platforms like Meesho or Fiverr allow easy entry with low capital.
+    Focus on consistency and gradual growth to build stable income over time.
+    `;
+}
+
+else if (score <= 7) {
+    level = "Moderate Risk";
+    explanation = `
+    You have a balanced risk profile, allowing both growth and safety.
+    With ₹${data.investment}, starting an Instagram-based or small online business is a great option.
+    Platforms like Instagram and Amazon provide wide reach and scalability.
+    Focus on branding, marketing, and customer trust to grow steadily.
+    `;
+}
+
+else {
+    level = "High Risk";
+    explanation = `
+    You are open to high-risk investments for higher returns.
+    You can explore stock trading or startup-based business opportunities.
+    Platforms like trading apps or startup ecosystems can help scale quickly.
+    However, ensure proper research and diversification to minimize losses.
+    `;
+}
+
+// Show Report
+document.getElementById("report").innerHTML = `
+<h1>📊 AI Investment Report</h1>
+
+<div class="section">
+<h2>👤 User Details</h2>
+<p><b>Name:</b> ${data.name}</p>
+<p><b>Age:</b> ${data.age}</p>
+<p><b>Income:</b> ₹${data.income}</p>
+<p><b>Investment:</b> ₹${data.investment}</p>
+<p><b>Risk:</b> ${data.risk}</p>
+</div>
+
+<div class="section">
+<h2>📈 Risk Analysis</h2>
+<p>${level}</p>
+</div>
+
+<div class="section">
+<h2>🤖 AI Recommendation</h2>
+<p>${explanation}</p>
+</div>
+
+<div class="section">
+<h2>📌 Final Advice</h2>
+<p>
+Start small, stay consistent, and reinvest your profits.
+Continuous learning and adapting to trends will help you succeed.
+</p>
+</div>
+
+<div class="section news" id="news">
+<h2>📰 Latest Market News</h2>
+<p>Loading news...</p>
+</div>
+`;
+
+
+// 📰 NEWS API FUNCTION
+async function getNews() {
+
+    const apiKey = "9ab7fa6cf478443580faa03750821901"; // 🔑 put your key
+
+    try {
+        const res = await fetch(`https://newsapi.org/v2/top-headlines?category=business&country=us&apiKey=${apiKey}`);
+        const dataNews = await res.json();
+
+        let newsHTML = "<h2>📰 Latest Market News</h2>";
+
+        dataNews.articles.slice(0, 3).forEach(article => {
+            newsHTML += `
+                <p>👉 <b>${article.title}</b></p>
+            `;
+        });
+
+        document.getElementById("news").innerHTML = newsHTML;
+
+    } catch {
+        document.getElementById("news").innerHTML = "<p>Unable to load news</p>";
+    }
+}
+
+getNews();
+
+</script>
+
+</body>
+</html>
